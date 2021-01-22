@@ -6,6 +6,9 @@ const player2EarnedScoreEl = document.getElementById('score--1');
 const player1CurrentScoreEl = document.getElementById('current--0');
 const player2CurrentScoreEl = document.getElementById('current--1');
 
+const btnRollDice = document.querySelector('.btn--roll');
+const btnHold = document.querySelector('.btn--hold');
+
 const player1Section = document.querySelector('.player--0');
 const player2Section = document.querySelector('.player--1');
 const targetScore = 30;
@@ -32,7 +35,6 @@ const rollDice = function () {
   return aRollNumber;
 };
 
-// the swithUser function will return which user  switch from
 const switchUser = function () {
   if (player1Section.classList.contains('player--active')) {
     manipulateClassList(player1Section, 'remove', 'player--active');
@@ -45,44 +47,87 @@ const switchUser = function () {
   }
 };
 
-document.querySelector('.btn--new').addEventListener('click', function () {});
-
-// Roll Dice BUTTONclick
-document.querySelector('.btn--roll').addEventListener('click', function () {
+const rolldiceBtnEventHandler = function () {
   const rollScore = rollDice();
+  //check which user it is ， if it‘s user 1
   if (user1Actived) {
+    //if dice point is 1 , lose all current score and switch another user
     if (rollScore === 1) {
       user1CurrentScore = 0;
       switchUser();
     } else {
+      //add up score
       user1CurrentScore += rollScore;
     }
-    player1CurrentScore.textContent = user1CurrentScore + user1EarnedScore;
-  } else {
+    player1CurrentScoreEl.textContent = user1CurrentScore;
+  }
+  //if it‘s user 2
+  else {
     if (rollScore === 1) {
       user2CurrentScore = 0;
       switchUser();
     } else {
       user2CurrentScore += rollScore;
     }
-    player2CurrentScore.textContent = user2CurrentScore + user2EarnedScore;
+    player2CurrentScoreEl.textContent = user2CurrentScore;
   }
-});
+};
 
-document.querySelector('.btn--hold').addEventListener('click', function () {
+const holdBtnClickEventHandler = function () {
+  //if it‘s user 1
   if (user1Actived) {
     user1EarnedScore += user1CurrentScore;
-    player1CurrentScore.textContent = user1EarnedScore;
-    if (user1EarnedScore > targetScore) {
-      console.log('player1 win');
+    player1EarnedScoreEl.textContent = user1EarnedScore;
+    user1CurrentScore = 0;
+    player1CurrentScoreEl.textContent = 0;
+    //the condition of win the game
+    if (user1EarnedScore >= targetScore) {
+      player1Section.classList.add('player--winner');
+      btnRollDice.removeEventListener('click', rolldiceBtnEventHandler);
+      btnHold.removeEventListener('click', holdBtnClickEventHandler);
+    } else {
+      switchUser();
     }
-    switchUser();
   } else {
     user2EarnedScore += user2CurrentScore;
-    player2CurrentScore.textContent = user2EarnedScore;
-    if (user2EarnedScore > targetScore) {
-      console.log('player2 win');
+    player2EarnedScoreEl.textContent = user2EarnedScore;
+    user2CurrentScore = 0;
+    player2CurrentScoreEl.textContent = 0;
+    if (user2EarnedScore >= targetScore) {
+      player2Section.classList.add('player--winner');
+      btnRollDice.removeEventListener('click', rolldiceBtnEventHandler);
+      btnHold.removeEventListener('click', holdBtnClickEventHandler);
+    } else {
+      switchUser();
     }
+  }
+};
+// Roll Dice BUTTONclick
+btnRollDice.addEventListener('click', rolldiceBtnEventHandler);
+
+// HOLD BUTTON clicked
+btnHold.addEventListener('click', holdBtnClickEventHandler);
+
+//reset the game
+document.querySelector('.btn--new').addEventListener('click', function () {
+  player1CurrentScoreEl.textContent = 0;
+  player2CurrentScoreEl.textContent = 0;
+  player1EarnedScoreEl.textContent = 0;
+  player2EarnedScoreEl.textContent = 0;
+  user1CurrentScore = 0;
+  user2CurrentScore = 0;
+  user1EarnedScore = 0;
+  user2EarnedScore = 0;
+  // Roll Dice BUTTONclick
+  btnRollDice.addEventListener('click', rolldiceBtnEventHandler);
+
+  // HOLD BUTTON clicked
+  btnHold.addEventListener('click', holdBtnClickEventHandler);
+  player1Section.classList.remove('player--winner');
+  player2Section.classList.remove('player--winner');
+
+  //always player 1 first for new game
+  if (!user1Actived) {
     switchUser();
   }
 });

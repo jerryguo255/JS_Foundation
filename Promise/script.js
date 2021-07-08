@@ -14,11 +14,12 @@ const getCountryData = function (country) {
       renderCountry(data[0]);
       // check the country if has a neighbour
       const neighbour = data[0].borders[0];
-      if (!neighbour) return;
-
+      //if the country dose not have neighbour
+      if (!neighbour) throw new Error("This country does't have neighbour");
       //fetch the neighbour country , return a response
       return getJsonHelper(
-        `https://restcountries.eu/rest/v2/alpha/${neighbour}`
+        `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
+        `Country not found!`
       );
     })
     //handle response
@@ -27,7 +28,7 @@ const getCountryData = function (country) {
     .then(data => renderCountry(data, 'neighbour'))
     .catch(err => {
       console.log(`${err} `);
-      renderError(`Something went wrong : ${err.message}. `);
+      renderError(`${err}. `);
     })
     //only works on promise, so the catch will also return a promise no matter it perform or not
     .finally(() => {
@@ -36,12 +37,13 @@ const getCountryData = function (country) {
 };
 //getCountryData('uk');
 btn.addEventListener('click', () => {
-  getCountryData('uk');
+  getCountryData('new Zealand');
 });
 
-const getJsonHelper = function (url, ErrMessage) {
+const getJsonHelper = function (url, ErrMessage = 'Something went wrong') {
   return fetch(url).then(response => {
-    if (!response.ok) throw new Error(`Error ${response.status} `);
+    if (!response.ok)
+      throw new Error(`Error ${response.status} : ${ErrMessage}`);
     return response.json();
   });
 };

@@ -35,10 +35,6 @@ const getCountryData = function (country) {
       countriesContainer.style.opacity = 1;
     });
 };
-//getCountryData('uk');
-btn.addEventListener('click', () => {
-  whereAmI('51.50354', '-0.12768');
-});
 
 const getJsonHelper = function (url, ErrMessage = 'Something went wrong') {
   return fetch(url).then(response => {
@@ -69,9 +65,12 @@ const renderCountry = function (country, className = '') {
   countriesContainer.insertAdjacentHTML('beforeend', html);
 };
 
-const whereAmI = function (lat, lng) {
-  //reverse geocoding , convert coordinates to a meaningful location,
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+const whereAmI = function () {
+  getPosition()
+    .then(positon => {
+      const { latitude: lat, longitude: lng } = positon.coords;
+      return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    })
     .then(response => {
       if (!response.ok)
         throw new Error(`Error ${response.status} :get data too fast`);
@@ -94,7 +93,10 @@ const whereAmI = function (lat, lng) {
     .finally(() => {
       countriesContainer.style.opacity = 1;
     });
+  //reverse geocoding , convert coordinates to a meaningful location,
 };
+//getCountryData('uk');
+btn.addEventListener('click', whereAmI);
 /////////////////////////////
 
 // Coding Challenge #1
@@ -122,3 +124,110 @@ TEST COORDINATES 2: -33.933, 18.474
 
 GOOD LUCK 😀
 */
+
+//#region **test event loop**
+
+//top of call stack
+// console.log('Test start');
+
+// //regist in web api enviornment，when fire off， add to callback queue
+// setTimeout(() => console.log('0 sec timer'), 0);
+
+// //regist in web api enviornment，when fire off， add to MICROTASK queue
+// Promise.resolve('Resolved promise 1').then(res => console.log(res));
+// Promise.resolve('Resolved promise 2').then(res => {
+//   for (let i = 0; i < 50; i++) {
+//     console.log('i');
+//   }
+//   console.log(res);
+// });
+
+// //secondry of call stack
+// console.log('Test end');
+
+//#endregion
+
+//#region  **encapsulate an asynchronous behavior into a promise**
+
+// const lotteryPromise = new Promise(function (resove, reject) {
+//   //executor
+//   console.log('Lotter draw is happenning...');
+//   setTimeout(() => {
+//     if (Math.random() >= 0.5) {
+//       resove('You Win');
+//     } else {
+//       reject(new Error('You lost 2your money'));
+//     }
+//   }, 500);
+// });
+
+// lotteryPromise.then(
+//   response => console.log(response),
+//   err => console.log(err)
+// );
+//#endregion
+
+//#region **Promisifying setTimeout**
+
+// const wait = function (milliseconds) {
+//   return new Promise(resolve => {
+//     setTimeout(resolve, milliseconds, milliseconds);
+//   });
+// };
+
+// wait(1000)
+//   .then(resc => {
+//     console.log(`${resc / 1000}s passed.`);
+//     return wait(resc * 3);
+//   })
+//   .then(r => console.log(`${r / 1000}s passed.`));
+
+//1s passed.
+//3s passed.
+
+//callback hell
+// setTimeout(() => {
+//   console.log('1s passed');
+//   setTimeout(() => {
+//     console.log('2s passed');
+//   }, 1000);
+// }, 1000);
+
+//#endregion
+
+// //#region  **simple promise**
+// const getDataAsyc = function (value) {
+//   return new Promise((resolve, reject) => {
+//     resolve(value);
+//     reject(value); //
+//   });
+// };
+
+// getDataAsyc(22).then(
+//   res => console.log(res),
+//   err => {
+//     throw new Error(`reject : ${err}`);
+//   }
+// );
+// //output: 22;
+
+// Promise.resolve('resolve').then(x => console.log(x));
+// Promise.reject('reject').then(x => console.Error(x));
+
+//#endregion
+// navigator.geolocation.getCurrentPosition(
+//   position => console.log(position),
+//   err => console.log(err)
+// );
+// console.log('this line first');
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(
+      // position => resolve(position),
+      resolve,
+      // err => reject(err)
+      reject
+    );
+  });
+};

@@ -4,6 +4,16 @@ const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(
+      // position => resolve(position),
+      resolve,
+      // err => reject(err)
+      reject
+    );
+  });
+};
 
 const getCountryData = function (country) {
   // fetch the country return a response
@@ -221,13 +231,108 @@ GOOD LUCK 😀
 // );
 // console.log('this line first');
 
-const getPosition = function () {
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Build the image loading functionality that I just showed you on the screen.
+
+Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+PART 1
+1. Create a function 'createImage' which receives imgPath as an input.
+ This function returns a promise which creates a new image (use document.createElement('img')) 
+ sets the .src attribute to the provided image path.
+
+  //When the image is done loading, append it to the DOM element with the 'images' class,
+  //and resolve the promise.
+
+   The fulfilled value should be the image element itself.
+    In case there is an error loading the image ('error' event), reject the promise.
+*/
+
+// createImage('https://i.loli.net/2021/07/10/ExX6WfeY2uNcR3v.png').then(dom => {
+//   countriesContainer.appendChild(dom);
+// });
+
+// const createImageT = function (imgpath) {
+//   const dom = document.createElement('img');
+//   dom.src = imgpath;
+//   dom.width = 55;
+//   dom.alt = 'asdasd';
+//   btn.appendChild(dom);
+// };
+// createImageT('https://i.loli.net/2021/07/10/ty3u9ZogDH72d8F.png');
+
+const imgContainer = document.querySelector('.images');
+
+// with two arguments
+const createImage = function (imgPath, waitSec) {
   return new Promise(function (resolve, reject) {
-    navigator.geolocation.getCurrentPosition(
-      // position => resolve(position),
-      resolve,
-      // err => reject(err)
-      reject
-    );
+    const dom = document.createElement('img');
+    // console.log('loading start');
+    dom.src = imgPath;
+
+    dom.addEventListener('load', function () {
+      imgContainer.append(dom);
+      resolve([dom, waitSec]);
+    });
+    dom.addEventListener('error', function () {
+      reject(new Error('connot load'));
+    });
   });
 };
+const wait = function (sec, args) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve([sec, args]), sec * 1000);
+  });
+};
+
+//create  image-1 with wait time,
+createImage('./img/img-1.jpg', 1.5)
+  .then(arr => {
+    const [imgElement, waitSec] = arr;
+    //output with sec and img file name
+    console.log(
+      `After ${waitSec} secs Image:${imgElement.src.slice(
+        imgElement.src.indexOf('/img/') + 5
+      )} will be hidden`
+    );
+    return wait(waitSec, imgElement);
+  })
+  //wait x sec  hide
+  .then(arr => {
+    const [sec, imgElement] = arr;
+    imgElement.style.visibility = 'hidden';
+    console.log(`${sec} sec passed and image hided`);
+    return wait(sec, imgElement);
+  })
+  .then(arr => {
+    const [sec, imgElement] = arr;
+    imgElement.src = './img/img-2.jpg';
+    imgElement.style.visibility = 'visible';
+    console.log(`${sec} sec passed and image shows`);
+    return wait(sec, imgElement);
+  })
+  .then(arr => {
+    const [sec, imgElement] = arr;
+    imgElement.style.visibility = 'hidden';
+    console.log(`${sec} sec passed and image hided`);
+  })
+  .catch(err => console.error(err));
+
+/*
+If this part is too tricky for you, just watch the first part of the solution.
+
+PART 2
+2. Comsume the promise using .then and also add an error handler;
+3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+
+4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+5. After the second image has loaded, pause execution for 2 seconds again;
+6. After the 2 seconds have passed, hide the current image.
+
+TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+GOOD LUCK 😀
+*/

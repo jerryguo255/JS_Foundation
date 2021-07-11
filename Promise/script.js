@@ -73,6 +73,7 @@ const renderCountry = function (country, className = '') {
       </div> 
     `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
 };
 
 const whereAmI = function () {
@@ -109,7 +110,7 @@ const whereAmI = function () {
 btn.addEventListener('click', whereAmI);
 /////////////////////////////
 
-// Coding Challenge #1
+//#region  Coding Challenge #1
 
 /* 
 In this challenge you will build a function 'whereAmI' which renders a country ONLY based on GPS coordinates. For that, you will use a second API to geocode coordinates.
@@ -134,6 +135,7 @@ TEST COORDINATES 2: -33.933, 18.474
 
 GOOD LUCK 😀
 */
+//#endregion
 
 //#region **test event loop**
 
@@ -225,114 +227,161 @@ GOOD LUCK 😀
 // Promise.reject('reject').then(x => console.Error(x));
 
 //#endregion
-// navigator.geolocation.getCurrentPosition(
-//   position => console.log(position),
-//   err => console.log(err)
-// );
-// console.log('this line first');
 
-///////////////////////////////////////
-// Coding Challenge #2
+//#region  Coding Challenge #2
 
-/* 
-Build the image loading functionality that I just showed you on the screen.
+// /*
+// Build the image loading functionality that I just showed you on the screen.
 
-Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+// Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
 
-PART 1
-1. Create a function 'createImage' which receives imgPath as an input.
- This function returns a promise which creates a new image (use document.createElement('img')) 
- sets the .src attribute to the provided image path.
+// PART 1
+// 1. Create a function 'createImage' which receives imgPath as an input.
+//  This function returns a promise which creates a new image (use document.createElement('img'))
+//  sets the .src attribute to the provided image path.
 
-  //When the image is done loading, append it to the DOM element with the 'images' class,
-  //and resolve the promise.
+//   //When the image is done loading, append it to the DOM element with the 'images' class,
+//   //and resolve the promise.
 
-   The fulfilled value should be the image element itself.
-    In case there is an error loading the image ('error' event), reject the promise.
-*/
+//    The fulfilled value should be the image element itself.
+//     In case there is an error loading the image ('error' event), reject the promise.
+// */
 
-// createImage('https://i.loli.net/2021/07/10/ExX6WfeY2uNcR3v.png').then(dom => {
-//   countriesContainer.appendChild(dom);
-// });
+// // createImage('https://i.loli.net/2021/07/10/ExX6WfeY2uNcR3v.png').then(dom => {
+// //   countriesContainer.appendChild(dom);
+// // });
 
-// const createImageT = function (imgpath) {
-//   const dom = document.createElement('img');
-//   dom.src = imgpath;
-//   dom.width = 55;
-//   dom.alt = 'asdasd';
-//   btn.appendChild(dom);
+// // const createImageT = function (imgpath) {
+// //   const dom = document.createElement('img');
+// //   dom.src = imgpath;
+// //   dom.width = 55;
+// //   dom.alt = 'asdasd';
+// //   btn.appendChild(dom);
+// // };
+// // createImageT('https://i.loli.net/2021/07/10/ty3u9ZogDH72d8F.png');
+
+// const imgContainer = document.querySelector('.images');
+
+// // with two arguments
+// const createImage = function (imgPath, waitSec) {
+//   return new Promise(function (resolve, reject) {
+//     const dom = document.createElement('img');
+//     // console.log('loading start');
+//     dom.src = imgPath;
+
+//     dom.addEventListener('load', function () {
+//       imgContainer.append(dom);
+//       resolve([dom, waitSec]);
+//     });
+//     dom.addEventListener('error', function () {
+//       reject(new Error('connot load'));
+//     });
+//   });
 // };
-// createImageT('https://i.loli.net/2021/07/10/ty3u9ZogDH72d8F.png');
+// const wait = function (sec, args) {
+//   return new Promise(resolve => {
+//     setTimeout(() => resolve([sec, args]), sec * 1000);
+//   });
+// };
 
-const imgContainer = document.querySelector('.images');
+// //create  image-1 with wait time,
+// createImage('./img/img-1.jpg', 1.5)
+//   .then(arr => {
+//     const [imgElement, waitSec] = arr;
+//     //output with sec and img file name
+//     console.log(
+//       `After ${waitSec} secs Image:${imgElement.src.slice(
+//         imgElement.src.indexOf('/img/') + 5
+//       )} will be hidden`
+//     );
+//     return wait(waitSec, imgElement);
+//   })
+//   //wait x sec  hide
+//   .then(arr => {
+//     const [sec, imgElement] = arr;
+//     imgElement.style.visibility = 'hidden';
+//     console.log(`${sec} sec passed and image hided`);
+//     return wait(sec, imgElement);
+//   })
+//   .then(arr => {
+//     const [sec, imgElement] = arr;
+//     imgElement.src = './img/img-2.jpg';
+//     imgElement.style.visibility = 'visible';
+//     console.log(`${sec} sec passed and image shows`);
+//     return wait(sec, imgElement);
+//   })
+//   .then(arr => {
+//     const [sec, imgElement] = arr;
+//     imgElement.style.visibility = 'hidden';
+//     console.log(`${sec} sec passed and image hided`);
+//   })
+//   .catch(err => console.error(err));
 
-// with two arguments
-const createImage = function (imgPath, waitSec) {
-  return new Promise(function (resolve, reject) {
-    const dom = document.createElement('img');
-    // console.log('loading start');
-    dom.src = imgPath;
+// /*
+// If this part is too tricky for you, just watch the first part of the solution.
 
-    dom.addEventListener('load', function () {
-      imgContainer.append(dom);
-      resolve([dom, waitSec]);
-    });
-    dom.addEventListener('error', function () {
-      reject(new Error('connot load'));
-    });
-  });
-};
-const wait = function (sec, args) {
-  return new Promise(resolve => {
-    setTimeout(() => resolve([sec, args]), sec * 1000);
-  });
-};
+// PART 2
+// 2. Comsume the promise using .then and also add an error handler;
+// 3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
 
-//create  image-1 with wait time,
-createImage('./img/img-1.jpg', 1.5)
-  .then(arr => {
-    const [imgElement, waitSec] = arr;
-    //output with sec and img file name
-    console.log(
-      `After ${waitSec} secs Image:${imgElement.src.slice(
-        imgElement.src.indexOf('/img/') + 5
-      )} will be hidden`
+// 4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+// 5. After the second image has loaded, pause execution for 2 seconds again;
+// 6. After the 2 seconds have passed, hide the current image.
+
+// TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+// GOOD LUCK 😀
+// */
+
+//#endregion
+
+//#region  Rewrite WhereAmI function, change promise chain to async await pattern
+
+// fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`).then(res =>
+//   console.log(res)
+// );
+const showWhereAmI = async function () {
+  try {
+    //get location from geoAPI and destructure
+    const {
+      coords: { latitude: lat, longitude: lng },
+    } = await getPosition();
+
+    //fetch countryRes
+    const geoCountryRes = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json`
     );
-    return wait(waitSec, imgElement);
-  })
-  //wait x sec  hide
-  .then(arr => {
-    const [sec, imgElement] = arr;
-    imgElement.style.visibility = 'hidden';
-    console.log(`${sec} sec passed and image hided`);
-    return wait(sec, imgElement);
-  })
-  .then(arr => {
-    const [sec, imgElement] = arr;
-    imgElement.src = './img/img-2.jpg';
-    imgElement.style.visibility = 'visible';
-    console.log(`${sec} sec passed and image shows`);
-    return wait(sec, imgElement);
-  })
-  .then(arr => {
-    const [sec, imgElement] = arr;
-    imgElement.style.visibility = 'hidden';
-    console.log(`${sec} sec passed and image hided`);
-  })
-  .catch(err => console.error(err));
 
-/*
-If this part is too tricky for you, just watch the first part of the solution.
+    //anything isn‘t 200， throw exception
+    if (!geoCountryRes.ok) {
+      throw new Error('Error:' + geoCountryRes.status);
+    }
+    //json it
+    const geoCountryName = await geoCountryRes.json();
 
-PART 2
-2. Comsume the promise using .then and also add an error handler;
-3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+    const countryDataRes = await fetch(
+      `https://restcountries.eu/rest/v2/name/${geoCountryName.country}`
+    );
+    if (!countryDataRes.ok) throw new Error('Error:' + countryDataRes.status);
 
-4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
-5. After the second image has loaded, pause execution for 2 seconds again;
-6. After the 2 seconds have passed, hide the current image.
+    const countryData = await countryDataRes.json();
 
-TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+    renderCountry(countryData[0]);
+  } catch (error) {
+    throw error;
+  }
+};
 
-GOOD LUCK 😀
-*/
+(async () => {
+  try {
+    const re = await showWhereAmI();
+
+    console.log(re);
+  } catch (err) {
+    console.log(`${err} emoj`);
+  }
+})();
+
+// first
+// after fetch
+// Response {...}

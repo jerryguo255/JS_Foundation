@@ -2,6 +2,7 @@
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+const imgContainer = document.querySelector('.images');
 
 ///////////////////////////////////
 const getPosition = function () {
@@ -207,7 +208,7 @@ GOOD LUCK 😀
 
 //#endregion
 
-// //#region  **simple promise**
+//#region  **simple promise**
 // const getDataAsyc = function (value) {
 //   return new Promise((resolve, reject) => {
 //     resolve(value);
@@ -228,7 +229,7 @@ GOOD LUCK 😀
 
 //#endregion
 
-//#region  Coding Challenge #2
+// //#region  Coding Challenge #2
 
 // /*
 // Build the image loading functionality that I just showed you on the screen.
@@ -259,8 +260,6 @@ GOOD LUCK 😀
 // //   btn.appendChild(dom);
 // // };
 // // createImageT('https://i.loli.net/2021/07/10/ty3u9ZogDH72d8F.png');
-
-// const imgContainer = document.querySelector('.images');
 
 // // with two arguments
 // const createImage = function (imgPath, waitSec) {
@@ -333,7 +332,7 @@ GOOD LUCK 😀
 // GOOD LUCK 😀
 // */
 
-//#endregion
+// //#endregion
 
 //#region  Rewrite WhereAmI function, change promise chain to async await pattern
 
@@ -372,16 +371,160 @@ const showWhereAmI = async function () {
   }
 };
 
-(async () => {
-  try {
-    const re = await showWhereAmI();
+// (async () => {
+//   try {
+//     const re = await showWhereAmI();
 
-    console.log(re);
-  } catch (err) {
-    console.log(`${err} emoj`);
-  }
-})();
-
+//     console.log(re);
+//   } catch (err) {
+//     console.log(`${err} emoj`);
+//   }
+// })();
 // first
 // after fetch
 // Response {...}
+//#endregion
+
+//#region  Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+*/
+
+const waitNDo = function (sec) {
+  return new Promise(resolve => {
+    setTimeout(resolve, sec * 1000);
+  });
+};
+//#region  rewrite create img with Pause time
+
+//
+// const loadNPause = async function (imgPath01, imgPath02) {
+//   try {
+//     // create img element and set imgPath01
+//     const imgEl = document.createElement('img');
+//     imgEl.src = imgPath01;
+
+//     // load img with 2s(simulate bad network)
+//     await waitNDo(2);
+//     imgEl.addEventListener('load', () => {
+//       imgContainer.append(imgEl);
+//     });
+//     imgEl.addEventListener('error', () => {
+//       console.log('img01 load error');
+//     });
+
+//     // hide img after 2s
+//     await waitNDo(2);
+//     imgEl.style.display = 'none';
+
+//     // set imgPath02
+//     imgEl.src = imgPath02;
+
+//     // load  img02 after 2s
+//     await waitNDo(2);
+//     imgEl.style.display = 'block';
+//     imgEl.addEventListener('load', () => {
+//       console.log(imgEl);
+//       imgContainer.append(imgEl);
+//     });
+//     imgEl.addEventListener('error', () => {
+//       console.log('img01 load error');
+//     });
+
+//     // hide img02 after 2s
+//     await waitNDo(2);
+//     imgEl.style.display = 'none';
+
+//     console.log('ss');
+//   } catch (err) {
+//     console.log(err.message);
+//     // throw new Error(`${err.message} + loadnPause Error🐞`);
+//   }
+// };
+
+// try {
+//   loadNPause('./img/img-1.jpg', './img/img-2.jpg');
+// } catch (err) {
+//   console.log(err);
+// }
+
+// (async () => {
+//   await waitNDo(2);
+//   console.log('ss');
+//   await waitNDo(2);
+//   console.log('ss');
+// })();
+//#endregion
+
+const createImageTag = async function (imgPath) {};
+/* 
+PART 2
+1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+3. Check out the 'imgs' array in the console! Is it like you expected?
+4. Use a promise combinator function to actually get the images from the array 😉
+5. Add the 'paralell' class to all the images (it has some CSS styles).
+
+TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+//
+//
+//
+
+const imgPaths = [
+  'https://wiki.eveuniversity.org/images/thumb/7/73/E-UNI.png/300px-E-UNI.png',
+  'https://i.ytimg.com/vi_webp/gEOI-Ae_aaU/sddefault.webp',
+  'https://hearthstone.nosdn.127.net/3/suspense/logo_blizzard.png',
+];
+
+// const createImg = function (imgPath) {
+//   //create a img element
+//   const img = document.createElement('img');
+//   //set src to it
+//   img.src = imgPath;
+
+//   //append to imgContainer
+//   imgContainer.append(img);
+
+//   //handle error
+//   img.addEventListener('error', () => {
+//     console.log('Image loading error');
+//   });
+
+//   //set class
+//   img.classList.add('parallel');
+// };
+
+const createImgTag = function (imgPath) {
+  return new Promise((resolve, reject) => {
+    const imgEl = document.createElement('img');
+    imgEl.src = imgPath;
+    imgEl.addEventListener('load', () => {
+      imgContainer.append(imgEl);
+      resolve(imgEl);
+    });
+    imgEl.addEventListener('error', () => {
+      reject('image load error');
+    });
+  });
+};
+
+const loadAll = async function (imgPathArr) {
+  try {
+    const imgsPromise = imgPathArr.map(async (v, i, _) => {
+      return await createImgTag(v);
+    });
+    const imgs = await Promise.all(imgsPromise);
+    imgs.forEach(img => img.classList.add('parallel'));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll(imgPaths);
+//#endregion

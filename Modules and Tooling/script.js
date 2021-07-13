@@ -1,15 +1,19 @@
-// // import
-// import {
-//   addToCart,
-//   totalPrice as price,
-//   totalQuentity,
-// } from "./shoppingCart.js";
+// import
+import {
+  addToCart,
+  totalPrice as price,
+  totalQuentity,
+} from "./shoppingCart.js";
 
 // //import all exported things
-// import shoppingCart, * as ShoppingCart from "./shoppingCart.js";
+import * as ShoppingCart from "./shoppingCart.js";
 
-// // import default
-// // import add from "./shoppingCart.js";
+import cloneDeep from "./node_modules/lodash-es/cloneDeep.js";
+
+// import cloneDeep from "lodash-es";
+
+//  import default
+//  import add from "./shoppingCart.js";
 
 // console.log("Importing module");
 // console.log(ShoppingCart);
@@ -17,17 +21,13 @@
 // price.toFixed();
 // console.log(ShoppingCart.totalPrice);
 
-// import add from "./shoppingCart.js";
+ShoppingCart.addToCart("juice", 5);
+ShoppingCart.addToCart("banana", 5);
+ShoppingCart.addToCart("pizza", 5);
 
-// add("juice", 5);
-// add("banana", 5);
-// add("pizza", 5);
+console.log(ShoppingCart.cart);
 
-// console.log(ShoppingCart.cart);
-
-import cloneDeep from "./node_modules/lodash-es/cloneDeep.js";
-
-const objA = {
+let objA = {
   cart: [
     { product: "bread", quantity: 5 },
     { product: "pizza", quantity: 3 },
@@ -36,14 +36,19 @@ const objA = {
   age: 22,
 };
 
-//const objB = Object.assign({}, objA); // copy A to B
-const objB = cloneDeep(objA);
-console.log(objA, objA.user.loggedIn); //22 true
-objA.user.loggedIn = false;
-objA.age = 23;
+//let objB = Object.assign({}, objA); // copy A to B
+let objB = cloneDeep(objA);
+console.log(objB);
+// console.log(objA, objA.user.loggedIn); //22 true
+// objA.user.loggedIn = false;
+// objA.age = 23;
 
-console.log(objB, objB.user.loggedIn); //22 true
-console.log(objA, objA.user.loggedIn); //23 false
+// console.log(objB, objB.user.loggedIn); //22 true
+// console.log(objA, objA.user.loggedIn); //23 false
+
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 // const state1 = {
 //   cart: "5",

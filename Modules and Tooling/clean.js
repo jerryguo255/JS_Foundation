@@ -27,19 +27,23 @@
 //   }
 // };
 
-// const classmates = [
-//   { name: "jerry", age: 33 },
-//   { name: "jerry2", age: 33 },
-//   { name: "jerry3", age: 33 },
-//   { name: "jerry4", age: 33 },
-// ];
+const classmates = [
+  { name: "jerry", age: 33 },
+  { name: "jerry2", age: 33 },
+  { name: "jerry3", age: 33 },
+  { name: "jerry4", age: 33 },
+];
+classmates.forEach((element) => {});
+const addClassmate = function (classmates, name, age) {
+  return [...classmates, { name, age }];
+};
 
-// const addClassmate = (name, age, classmates) => [...classmates, { name, age }];
+let addClassmateTemp = classmates;
+for (let i = 0; i <= 1000; i++) {
+  addClassmateTemp = addClassmate(addClassmateTemp, "jerry5", 22 + i);
+}
 
-// addClassmate("jerry5", 22, classmates);
-// // check("lisbon");
-// // console.log(sc);
-
+console.log(addClassmateTemp);
 /////
 
 // let count = 500; //全局作用域
